@@ -1,0 +1,185 @@
+#!/bin/sh
+
+#general config stuff
+ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+hwclock -w
+
+echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+echo "LANG=en_GB.UTF-8" > /etc/locale.conf
+echo "ahmad-PC" > /etc/hostname
+echo "permit nopass ahmad" > /etc/doas.conf
+echo '[Match]
+Name=enp4s0
+
+[Network]
+DHCP=yes' > /etc/systemd/network/20-wired.network
+
+echo '
+# Resolver configuration file.
+# See resolv.conf(5) for details.
+search speedport.ip
+nameserver 192.168.2.1
+nameserver fe80::1%enp4s0' > /etc/resolv.conf
+
+# arcolinux things
+echo '
+keyserver hkp://pool.sks-keyservers.net:80
+keyserver hkps://hkps.pool.sks-keyservers.net:443
+keyserver hkp://ipv4.pool.sks-keyservers.net:11371' >> /etc/pacman.d/gnupg/gpg.conf
+
+pacman-key -r 74F5DE85A506BF64
+pacman-key --lsign-key 74F5DE85A506BF64
+#marco
+pacman-key -r F1ABB772CE9F7FC0
+pacman-key --lsign-key F1ABB772CE9F7FC0
+#john
+pacman-key -r 4B1B49F7186D8731
+pacman-key --lsign-key 4B1B49F7186D8731
+#stephen
+pacman-key -r 02D507C6EFB8CEAA
+pacman-key --lsign-key 02D507C6EFB8CEAA
+#Brad
+pacman-key -r 18064BF445855549
+pacman-key --lsign-key 18064BF445855549
+#Raniel
+pacman-key -r 7EC1A5550718AB89
+pacman-key --lsign-key 7EC1A5550718AB89
+
+pacman -S wget --noconfirm --needed
+wget https://raw.githubusercontent.com/arcolinux/arcolinux-mirrorlist/master/etc/pacman.d/arcolinux-mirrorlist -O /etc/pacman.d/arcolinux-mirrorlist
+echo '
+#
+# /etc/pacman.conf
+#
+# See the pacman.conf(5) manpage for option and repository directives
+
+#
+# GENERAL OPTIONS
+#
+[options]
+# The following paths are commented out with their default values listed.
+# If you wish to use different paths, uncomment and update the paths.
+#RootDir     = /
+#DBPath      = /var/lib/pacman/
+#CacheDir    = /var/cache/pacman/pkg/
+#LogFile     = /var/log/pacman.log
+#GPGDir      = /etc/pacman.d/gnupg/
+#HookDir     = /etc/pacman.d/hooks/
+HoldPkg     = pacman glibc
+#XferCommand = /usr/bin/curl -L -C - -f -o %o %u
+#XferCommand = /usr/bin/wget --passive-ftp -c -O %o %u
+#CleanMethod = KeepInstalled
+Architecture = auto
+
+#IgnorePkg   =
+#IgnorePkg   =
+#IgnoreGroup =
+
+#NoUpgrade   =
+#NoExtract   =
+
+# Misc options
+#UseSyslog
+Color
+#TotalDownload
+CheckSpace
+#VerbosePkgLists
+ILoveCandy
+
+# By default, pacman accepts packages signed by keys that its local keyring
+# trusts (see pacman-key and its man page), as well as unsigned packages.
+SigLevel    = Required DatabaseOptional
+LocalFileSigLevel = Optional
+#RemoteFileSigLevel = Required
+
+# NOTE: You must run `pacman-key --init` before first using pacman; the local
+# keyring can then be populated with the keys of all official Arch Linux
+# packagers with `pacman-key --populate archlinux`.
+
+#
+# REPOSITORIES
+#   - can be defined here or included from another file
+#   - pacman will search repositories in the order defined here
+#   - local/custom mirrors can be added here or in separate files
+#   - repositories listed first will take precedence when packages
+#     have identical names, regardless of version number
+#   - URLs will have $repo replaced by the name of the current repo
+#   - URLs will have $arch replaced by the name of the architecture
+#
+# Repository entries are of the format:
+#       [repo-name]
+#       Server = ServerName
+#       Include = IncludePath
+#
+# The header [repo-name] is crucial - it must be present and
+# uncommented to enable the repo.
+#
+
+# The testing repositories are disabled by default. To enable, uncomment the
+# repo name header and Include lines. You can add preferred servers immediately
+# after the header, and they will be used before the default mirrors.
+
+#[testing]
+#Include = /etc/pacman.d/mirrorlist
+
+[core]
+Include = /etc/pacman.d/mirrorlist
+
+[extra]
+Include = /etc/pacman.d/mirrorlist
+
+#[community-testing]
+#Include = /etc/pacman.d/mirrorlist
+
+[community]
+Include = /etc/pacman.d/mirrorlist
+
+# If you want to run 32 bit applications on your x86_64 system,
+# enable the multilib repositories as required here.
+
+#[multilib-testing]
+#Include = /etc/pacman.d/mirrorlist
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+# An example of a custom package repository.  See the pacman manpage for
+# tips on creating your own repositories.
+#[custom]
+#SigLevel = Optional TrustAll
+#Server = file:///home/custompkgs
+
+[arcolinux_repo]
+SigLevel = Required DatabaseOptional
+Include = /etc/pacman.d/arcolinux-mirrorlist
+
+[arcolinux_repo_3party]
+SigLevel = Required DatabaseOptional
+Include = /etc/pacman.d/arcolinux-mirrorlist
+
+[arcolinux_repo_xlarge]
+SigLevel = Required DatabaseOptional
+Include = /etc/pacman.d/arcolinux-mirrorlist' > /etc/pacman.conf
+pacman -Sy
+pacman -S arcolinux-mirrorlist-git --noconfirm
+
+numberofcores=$(grep -c ^processor /proc/cpuinfo)
+
+sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j7"/g' /etc/makepkg.conf;
+sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/g' /etc/makepkg.conf
+sed -i 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/g' /etc/makepkg.conf
+
+pacman -S micro doas man-db zsh zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search efibootmgr adobe-source-han-sans-jp-fonts arcolinux-hblock-git dash bpytop intel-ucode gvfs lxsession-gtk3 pcmanfm-gtk3 mpv noto-fonts playerctl terminator ttf-ms-fonts neofetch libva-mesa-driver pulseaudio pulseaudio-alsa timeshift youtube-dl reflector
+pacman -S --needed base-devel
+#efibootmgr -c -L 'Arch Linux' -l /vmlinuz-linux-zen -u 'root=UUID=3be38bf4-9256-43da-9415-54e8788f217d rw initrd=\intel-ucode.img initrd=\initramfs-linux-zen.img loglevel=0 quiet'
+hblock
+systemctl enable systemd-networkd
+passwd
+useradd -s /bin/zsh -c 'Ahmad Hazem' -m ahmad
+passwd ahmad
+
+# echo'
+# ### Enable Echo/Noise-Cancellation
+# load-module module-echo-cancel use_master_format=1 aec_method=webrtc aec_args="analog_gain_control=0\ digital_gain_control=1" source_name=echoCancel_source sink_name=echoCancel_sink
+# ' >> /etc/pulse/default.pa
