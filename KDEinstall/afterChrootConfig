@@ -3,6 +3,10 @@
 pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 pacman-key --lsign-key 3056513887B78AEB
 pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+
+echo "ahmad-PC" > /etc/hostname
+echo "permit nopass ahmad" > /etc/doas.conf
+
 echo '
 #
 # /etc/pacman.conf
@@ -107,7 +111,11 @@ Include = /etc/pacman.d/mirrorlist
 #Server = file:///home/custompkgs
 
 [chaotic-aur]
-Include = /etc/pacman.d/chaotic-mirrorlist' > /etc/pacman.conf
+Include = /etc/pacman.d/chaotic-mirrorlist
+
+[ahmad-arch-repo]
+SigLevel = Optional TrustAll
+Server = https://raw.githubusercontent.com/ahmadhazem1997/ahmad-arch-repo/master/$arch' > /etc/pacman.conf
 pacman -Sy
 
 numberofcores=$(grep -c ^processor /proc/cpuinfo)
@@ -116,7 +124,7 @@ sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j7"/g' /etc/makepkg.conf;
 sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/g' /etc/makepkg.conf
 sed -i 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/g' /etc/makepkg.conf
 
-pacman -S micro doas zsh zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search efibootmgr adobe-source-han-sans-jp-fonts hblock dash dashbinsh bpytop mpv noto-fonts kitty ttf-ms-fonts neofetch libva-mesa-driver  pulseaudio-alsa timeshift reflector ark celluloid plasma-desktop dolphin filelight kde-gtk-config kdeconnect kscreen kwallet-pam ntfs-3g pamac-aur pamac-tray-icon-plasma partitionmanager plasma-browser-integration plasma-disks plasma-nm plasma-pa plasma-systemmonitor sddm sddm-kcm spectacle
+pacman -S micro doas zsh zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search efibootmgr intel-ucode refin adobe-source-han-sans-jp-fonts hblock dash dashbinsh bpytop mpv noto-fonts alacritty ttf-ms-fonts neofetch libva-mesa-driver  pulseaudio-alsa timeshift reflector ark celluloid plasma-desktop dolphin filelight kde-gtk-config kdeconnect kscreen kwallet-pam ntfs-3g pamac-aur partitionmanager plasma-browser-integration plasma-disks plasma-nm plasma-pa plasma-systemmonitor sddm sddm-kcm spectacle
 pacman -S --needed base-devel
 hblock
 systemctl enable sddm NetworkManager
