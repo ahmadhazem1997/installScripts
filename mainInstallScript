@@ -4,13 +4,15 @@
 timedatectl set-ntp true
 
 umount -a
-mount /dev/sda2 /mnt
+mount /dev/nvme0n1p2 /mnt
 rm -rf /mnt/*
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
-mkdir /mnt/{Data,home}
-mount /dev/sda3 /mnt/home
+mkdir /mnt/{boot,Data,home,sharedData}
+
+mount /dev/nvme0n1p1 /mnt/boot
+mount /dev/nvme0n1p3 /mnt/home
 mount /dev/sdb1 /mnt/Data
+mount /dev/sdb2 /mnt/sharedData
+
 pacman -Sy
 pacstrap /mnt base linux-zen linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
