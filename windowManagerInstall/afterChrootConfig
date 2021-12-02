@@ -22,8 +22,8 @@ search speedport.ip
 nameserver 192.168.2.1
 nameserver fe80::1%enp4s0' > /etc/resolv.conf
 
-pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-pacman-key --lsign-key 3056513887B78AEB
+pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key FBA220DFC880C036
 pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 echo '
 #
@@ -142,7 +142,7 @@ sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j6"/g' /etc/makepkg.conf;
 sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/g' /etc/makepkg.conf
 sed -i 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/g' /etc/makepkg.conf
 
-pacman -S micro doas opendoas-sudo man-db fish efibootmgr adobe-source-han-sans-jp-fonts hblock dash dashbinsh bpytop gvfs lxsession-gtk3 pcmanfm-gtk3 mpv noto-fonts playerctl kitty ttf-ms-fonts neofetch libva-mesa-driver pulseaudio pulseaudio-alsa timeshift youtube-dl reflector keepassxc dropbox
+pacman -S micro intel-ucode doas opendoas-sudo man-db fish efibootmgr adobe-source-han-sans-jp-fonts hblock dash dashbinsh btop gvfs lxsession-gtk3 pcmanfm-gtk3 mpv noto-fonts playerctl kitty ttf-ms-fonts neofetch libva-mesa-driver pulseaudio pulseaudio-alsa timeshift youtube-dl reflector
 pacman -S --needed base-devel
 #efibootmgr -c -L 'Arch Linux' -l /vmlinuz-linux-zen -u 'root=UUID=3be38bf4-9256-43da-9415-54e8788f217d rw initrd=\intel-ucode.img initrd=\initramfs-linux-zen.img loglevel=0 quiet'
 hblock
