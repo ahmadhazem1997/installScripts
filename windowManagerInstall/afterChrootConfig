@@ -148,7 +148,7 @@ pacman -S --needed base-devel
 hblock
 systemctl enable systemd-networkd
 passwd
-useradd -s /bin/zsh -c 'Ahmad Hazem' -m ahmad
+useradd -s /bin/fish -c 'Ahmad Hazem' -m ahmad
 passwd ahmad
 
 # echo'

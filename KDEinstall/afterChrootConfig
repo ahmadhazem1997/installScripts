@@ -114,18 +114,16 @@ Include = /etc/pacman.d/mirrorlist
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 
-[ahmad-arch-repo]
-SigLevel = Optional TrustAll
-Server = https://raw.githubusercontent.com/ahmadhazem1997/ahmad-arch-repo/master/$arch' > /etc/pacman.conf
+#[ahmad-arch-repo]
+#SigLevel = Optional TrustAll
+#Server = https://raw.githubusercontent.com/ahmadhazem1997/ahmad-arch-repo/master/$arch' > /etc/pacman.conf
 pacman -Sy
-
-numberofcores=$(grep -c ^processor /proc/cpuinfo)
 
 sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j6"/g' /etc/makepkg.conf;
 sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/g' /etc/makepkg.conf
 sed -i 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/g' /etc/makepkg.conf
 
-pacman -S micro opendoas opendoas-sudo man-db lsd starship stow fish efibootmgr intel-ucode refind adobe-source-han-sans-jp-fonts hblock dash dashbinsh btop mpv noto-fonts alacritty kitty ttf-ms-fonts neofetch libva-mesa-driver  pipewire-alsa pipewire-pulse timeshift reflector ark celluloid plasma-desktop dolphin filelight kde-gtk-config kdeconnect kscreen kwallet-pam ntfs-3g pamac-aur partitionmanager plasma-browser-integration plasma-disks plasma-nm plasma-pa plasma-systemmonitor sddm sddm-kcm spectacle ulauncher gwenview latte-dock zip unzip unrar 
+pacman -S micro opendoas opendoas-sudo man-db lsd starship yadm fish efibootmgr intel-ucode refind adobe-source-han-sans-jp-fonts hblock dash dashbinsh btop mpv noto-fonts alacritty kitty ttf-ms-fonts neofetch libva-mesa-driver pipewire-alsa pipewire-pulse timeshift reflector ark celluloid plasma-desktop dolphin filelight kde-gtk-config kdeconnect kscreen kwallet-pam ntfs-3g pamac-aur partitionmanager plasma-browser-integration plasma-disks plasma-nm plasma-pa plasma-systemmonitor sddm sddm-kcm spectacle ulauncher gwenview latte-dock zip unzip unrar 
 pacman -S --needed base-devel
 hblock
 systemctl enable sddm NetworkManager
