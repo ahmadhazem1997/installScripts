@@ -14,5 +14,5 @@ mount /dev/sdb1 /mnt/Data
 mount /dev/sdb2 /mnt/sharedData
 
 pacman -Sy
-pacstrap /mnt base linux-zen linux-firmware
+pacstrap /mnt base linux-zen linux-firmware micro
 genfstab -U /mnt >> /mnt/etc/fstab
